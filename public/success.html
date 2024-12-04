@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success - Result Submission</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+      margin: 5px;
+      width: 45%;
+      text-align: center;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .btn-view {
+      background-color: #007bff;
+    }
+    .btn-view:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+
+  <div class="container">
+    <h1 class="text-3xl font-semibold text-center text-green-600 mb-4">Results Submitted Successfully!</h1>
+    <p class="text-lg text-center text-gray-700 mb-6">Your result has been successfully submitted. You can add more results or view the current result.</p>
+
+    <div class="flex justify-between">
+      <a href="/addresult" class="btn">Add More Results</a>
+      <a href="/results" class="btn btn-view">View Result</a>
+    </div>
+  </div>
+
+</body>
+</html>
+

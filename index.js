@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 const bodyParser = require("body-parser");
+const { getPositionSuffix } = require("./helper");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -130,6 +131,9 @@ app.post("/login", (req, res) => {
   res.status(401).json({ message: "Invalid credentials." });
 });
 
+
+let studentsData = [];
+
 app.post("/submit-result", upload.single("photo"), (req, res) => {
   const formData = req.body;
   const photo = req.file;
@@ -193,7 +197,6 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
     const second = parseFloat(formData[`${subject}_second`] || 0);
     const mid = parseFloat(formData[`${subject}_mid`] || 0);
     const exam = parseFloat(formData[`${subject}_exam`] || 0);
-    const position = parseInt(formData[`${subject}_position`] || 0);
 
     // Calculate the total for the subject
     const total = first + second + mid + exam;
@@ -226,6 +229,18 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
   // Save the overall total in the student data
   studentData.total_marks = overallTotal;
 
+  // Add student data to the list of students
+  studentsData.push(studentData);
+
+  
+  studentsData.sort((a, b) => b.total_marks - a.total_marks);
+
+  // Assign position to each student and add suffix
+  studentsData.forEach((student, index) => {
+    const position = index + 1; 
+    student.position = getPositionSuffix(position);
+  });
+
   // Save the data to a file
   const resultFilePath = path.join(__dirname, "data", `${formData.admission_number}-${formData.term}.json`);
 
@@ -240,12 +255,17 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
       console.error("Error saving the data:", err);
       return res.status(500).send("Error saving the result data");
     }
-    return res.status(200).send("Results successfully submitted");
+    return res.redirect("/success");
   });
 });
 
+
 app.get("/addresult",(req,res) => {
   res.sendFile(path.join(__dirname, "public", "addresult.html"));
+});
+
+app.get("/success",(req,res) => {
+  res.sendFile(path.join(__dirname, "public", "success.html"));
 });
 
 app.get('/fetch-result/:admission_number/:term', (req, res) => {

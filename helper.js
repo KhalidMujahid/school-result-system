@@ -13,6 +13,19 @@ function serveFile(res, filePath, contentType) {
   });
 }
 
+function getPositionSuffix(position) {
+  if (position % 10 === 1 && position !== 11) {
+    return `${position}st`;
+  } else if (position % 10 === 2 && position !== 12) {
+    return `${position}nd`;
+  } else if (position % 10 === 3 && position !== 13) {
+    return `${position}rd`;
+  } else {
+    return `${position}th`;
+  }
+}
+
 module.exports = {
   serveFile,
+  getPositionSuffix,
 }
