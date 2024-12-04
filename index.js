@@ -188,9 +188,7 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
       .join(" ");
   });
 
-  // Process the subject results and calculate totals
-  let overallTotal = 0; // Variable to store the overall total marks
-
+  let overallTotal = 0;
   subjects.forEach((subject, index) => {
     // Parse numerical values for each assessment
     const first = parseFloat(formData[`${subject}_first`] || 0);
@@ -218,7 +216,7 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
       second_assessment: second,
       mid_term_test: mid,
       exam: exam,
-      total_marks: total, // Total marks for this subject
+      total_marks: total, 
       subject_average: formData[`${subject}_subject_average`] || null,
       grade: formData[`${subject}_grade`] || null,
       position: formData[`${subject}_position`] || null,
@@ -236,10 +234,10 @@ app.post("/submit-result", upload.single("photo"), (req, res) => {
   studentsData.sort((a, b) => b.total_marks - a.total_marks);
 
   // Assign position to each student and add suffix
-  studentsData.forEach((student, index) => {
-    const position = index + 1; 
-    student.position = getPositionSuffix(position);
-  });
+ studentsData.forEach((student, index) => {
+  const position = index + 1; 
+  student.position = getPositionSuffix(position);
+});
 
   // Save the data to a file
   const resultFilePath = path.join(__dirname, "data", `${formData.admission_number}-${formData.term}.json`);

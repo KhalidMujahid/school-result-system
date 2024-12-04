@@ -14,16 +14,23 @@ function serveFile(res, filePath, contentType) {
 }
 
 function getPositionSuffix(position) {
-  if (position % 10 === 1 && position !== 11) {
-    return `${position}st`;
-  } else if (position % 10 === 2 && position !== 12) {
-    return `${position}nd`;
-  } else if (position % 10 === 3 && position !== 13) {
-    return `${position}rd`;
-  } else {
+  const lastDigit = position % 10;
+  const lastTwoDigits = position % 100;
+
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
     return `${position}th`;
   }
+  if (lastDigit === 1) {
+    return `${position}st`;
+  } else if (lastDigit === 2) {
+    return `${position}nd`;
+  } else if (lastDigit === 3) {
+    return `${position}rd`;
+  }
+
+  return `${position}th`;
 }
+
 
 module.exports = {
   serveFile,
