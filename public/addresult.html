@@ -10,6 +10,7 @@
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #f8f9fa;
+      /*width:100%;*/
     }
 
     .header {
@@ -40,7 +41,7 @@
   </style>
 </head>
 <body>
-  <div class="container py-4">
+  <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="header">
       <h3>UNIQUE KIDDIES SCHOOL</h3>
@@ -85,7 +86,7 @@
             <input type="text" id="classAverage" name="class_average" class="form-control" required>
           </div>
           <div class="col-md-4">
-            <label for="finalAverage" class="form-label">Final Average</label>
+            <label for="finalAverage" class="form-label">Student Average</label>
             <input type="text" id="finalAverage" name="final_average" class="form-control" required>
           </div>
           <div class="col-md-4">
@@ -248,7 +249,7 @@
       if (file) reader.readAsDataURL(file);
     }
     
-     function calculatePositionAndRemarks() {
+     function calculateRemarks() {
       const rows = Array.from(document.querySelectorAll("#subjects-table tr"));
       const finalMarksArray = rows.map(row => {
         const finalMarks = parseFloat(row.querySelector(".final-marks").value) || 0;
@@ -260,12 +261,12 @@
 
       // Assign position and remarks
       finalMarksArray.forEach((item, index) => {
-        const positionField = item.row.querySelector(".position");
+        //const positionField = item.row.querySelector(".position");
         const remarkField = item.row.querySelector(".remark");
         const finalMarks = item.finalMarks;
 
         // Assign position
-        positionField.value = `${index + 1}`;
+        remarkField.value = `${index + 1}`;
 
         // Assign remarks based on final marks
         if (finalMarks >= 75) {
@@ -318,6 +319,7 @@
           gradeField.value = "F";
         }
       }
+      calculateRemarks();
     });
     
     // Array of subjects
