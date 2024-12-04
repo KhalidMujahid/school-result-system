@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unique Kiddies | Result Checker</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .result-checker-page {
+      background-color: #343a40;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .form-container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    .btn-primary {
+      width: 100%;
+    }
+    .add-result-btn, .home-btn {
+      position: absolute;
+      top: -50px;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+    .add-result-btn {
+      right: 10px;
+      background-color: #007bff;
+    }
+    .add-result-btn:hover {
+      background-color: #0056b3;
+    }
+    .home-btn {
+      left: 10px;
+      background-color: #6c757d;
+    }
+    .home-btn:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid result-checker-page">
+    <div class="form-container">
+      <a href="/addresult" class="add-result-btn">Add Result</a>
+      <a href="/dashboard.html" class="home-btn">Home</a>
+      <h1>Result Checker</h1>
+      <form id="resultCheckerForm">
+        <div class="mb-3">
+          <label for="admissionNumber" class="form-label">Admission Number</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="admissionNumber" 
+            name="admissionNumber" 
+            placeholder="Enter Admission Number" 
+            required>
+        </div>
+        <div class="mb-3">
+          <label for="term" class="form-label">Select Term</label>
+          <select class="form-select" id="term" name="term" required>
+            <option value="">-- Select Term --</option>
+            <option value="1">First Term</option>
+            <option value="2">Second Term</option>
+            <option value="3">Third Term</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Check Result</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to handle form submission
+    document.getElementById("resultCheckerForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      // Collect form data
+      const admissionNumber = document.getElementById("admissionNumber").value;
+      const term = document.getElementById("term").value;
+
+      // Validate form data
+      if (!admissionNumber || !term) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        // Send request to the server
+        const response = await fetch("/check-result", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ admissionNumber, term })
+        });
+
+        // Handle the response
+        if (response.ok) {
+          const result = await response.json();
+          window.location.href = `/check/${encodeURIComponent(result.admission_number)}/${encodeURIComponent(term)}`;
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.message}`);
+        }
+      } catch (error) {
+        alert(`An error occurred: ${error.message}`);
+      }
+    });
+  </script>
+</body>
+</html>
+

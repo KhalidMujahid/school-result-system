@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Report Card</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.container {
+  width: 100%;
+  max-width: 210mm;
+  height: 297mm; 
+  padding: 10mm;
+  background-color: white;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Watermark for School Logo */
+body::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url('logo.jpg'); 
+  background-repeat: no-repeat;
+  background-size: 40%; 
+  opacity: 0.1;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Header Section */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+.header .school-info {
+  flex: 1;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.header .logo-left,
+.header .student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
+}
+
+.header .student-avatar {
+  width: 60px;
+  height: 60px;
+  border-color: #6c757d;
+}
+
+/* Student Details */
+#studentDetails {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+
+#studentDetails p {
+  margin: 0;
+  padding: 2px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+#studentDetails p:last-child {
+  border-bottom: none;
+}
+
+/* Table Styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #dee2e6;
+  padding: 4px;
+  text-align: center;
+  font-size: 8px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e9f5e8;
+}
+
+/* Remarks and Key Sections */
+.remarks-section,
+.key-rating-section {
+  margin-bottom: 5px;
+}
+
+.remarks-section h5,
+.key-rating-section h5 {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #495057;
+}
+
+.key-rating-section table,
+.remarks-section table {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.key-rating-section td,
+.remarks-section td {
+  font-size: 8px;
+  padding: 4px;
+}
+
+/* Comments Section */
+.comments {
+  margin-top: 5px;
+}
+
+.comments p {
+  background: #fef9e7;
+  padding: 4px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.comments strong {
+  font-weight: bold;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    overflow: hidden;
+  }
+
+  .header {
+    padding: 5px;
+  }
+
+  .header .logo-left,
+  .header .student-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 8px;
+    padding: 3px;
+  }
+
+  #studentDetails,
+  .remarks-section,
+  .key-rating-section,
+  .comments {
+    page-break-inside: avoid;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container py-4" id="reportCardContainer">
+   <div class="header">
+  <!-- Left: School Logo -->
+  <img src="/logo.jpg" alt="School Logo Left" class="logo-left">
+
+  <!-- Center: School Info -->
+  <div class="school-info">
+    <h3 class="h1">UNIQUE KIDDIES SCHOOL</h3>
+    <p>NURSERY, PRIMARY AND SECONDARY SCHOOL, <br /> OFF MRS. LAMI MAKUN STREET, KWALKWATA, MINNA, NIGER STATE</p>
+    <h5>Terminal Report Sheet (Junior Secondary)</h5>
+  </div>
+
+  <!-- Right: Student Avatar -->
+  <img src="av.jpg" alt="Student Avatar" class="student-avatar" id="studentAvatar">
+</div>
+
+    <!-- Student Details Section -->
+ <div class="row bg-white rounded shadow-sm p-4 mb-4 align-items-center" id="studentDetails">
+  <!-- Student Name Section -->
+  <div class="col-md-4 text-center">
+    <p><strong>Student Name:</strong></p>
+    <p class="mt-3 fw-bold text-secondary" id="studentName"></p>
+  </div>
+
+  <!-- Student Details Section -->
+  <div class="col-md-8">
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-md-6">
+        <p><strong><i class="bi bi-hash"></i> Admission No:</strong> <span id="admissionNumber"></span></p>
+        <p><strong><i class="bi bi-calendar-event"></i> Age:</strong> <span id="age"></span></p>
+        <p><strong><i class="bi bi-clock-history"></i> Attendance:</strong> <span id="attendance">/span></p>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-md-6">
+        <p><strong><i class="bi bi-bar-chart"></i> Final Average:</strong> <span id="finalAverage"></span></p>
+        <p><strong><i class="bi bi-bar-chart-line"></i> Class Average:</strong> <span id="classAverage"></span></p>
+        <p><strong><i class="bi bi-award"></i> House:</strong> <span id="house"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<table class="table table-bordered table-hover text-center mb-4" id="subjectsTable">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>1st C.A. Test (10)</th>
+      <th>Class/Home Activities (10)</th>
+      <th>Mid Term Test (20)</th>
+      <th>Exam (60)</th>
+      <th>Final Marks (100%)</th>
+      <th>Grade</th>
+      <th>Subject Position</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Rows will be injected dynamically -->
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="5" class="text-end"><strong>Total Marks:</strong></td>
+      <td id="totalMarks">0</td>
+      <td colspan="4"></td>
+    </tr>
+  </tfoot>
+</table>
+
+
+
+    <!-- Remarks and Key Rating Section -->
+    <div class="row mb-4">
+      <!-- Remarks Section -->
+      <div class="col-md-6">
+        <div class="remarks-section" id="remarksSection">
+          <h5>Affective Traits</h5>
+          <table class="table table-bordered text-center">
+            <thead class="table-light">
+              <tr>
+                <th>Trait</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody id="traitsTable">
+              <!-- Dynamic traits will be injected here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Key Rating Section -->
+      <div class="col-md-6">
+        <div class="key-rating-section">
+          <h5>Key to Grading</h5>
+          <table class="table table-bordered text-center">
+            <thead class="table-light">
+              <tr>
+                <th>Grade</th>
+                <th>Range</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>75 - 100</td>
+                <td>Excellent</td>
+              </tr>
+              <tr>
+                <td>B</td>
+                <td>60 - 74</td>
+                <td>Very Good</td>
+              </tr>
+              <tr>
+                <td>C</td>
+                <td>50 - 59</td>
+                <td>Good</td>
+              </tr>
+              <tr>
+                <td>D</td>
+                <td>40 - 49</td>
+                <td>Pass</td>
+              </tr>
+              <tr>
+                <td>F</td>
+                <td>0 - 39</td>
+                <td>Fail</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments" id="commentsSection">
+      <p><strong>Form Master's Comment:</strong> <span id="master_comment"></span>.</p>
+      <p><strong>Principal's Comment:</strong> <span id="principal_comment"></span>.</p>
+      <p><strong>Next Term Begins:</strong> <span id="next_term_begins"></span></p>
+    </div>
+
+    <!-- Grading Key -->
+    <div class="key-section">
+      <h5>Key</h5>
+      <p>5 - Excellent &bullet; 4 - Very Good &bullet; 3 - Good &bullet; 2 - Fair &bullet; 1 - Poor</p>
+    </div>
+  </div>
+
+<script>
+  const url = window.location.pathname; 
+  const urlParts = url.split('/');
+  const admissionNumber = urlParts[2];
+  const term = urlParts[3];
+
+  fetch(`/fetch-result/${admissionNumber}/${term}`)
+    .then(response => {
+      if (!response.ok) {
+        // If the status is 404 or any other error, redirect to the results page
+        if (response.status === 404) {
+          alert('No data found for this admission number and term.');
+          window.location.href = '/results'; // Replace with the correct results page URL
+        }
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Populate the data if found
+      document.getElementById('studentName').textContent = data.full_name;
+      document.getElementById('master_comment').textContent = data.form_master_comment;
+      document.getElementById('principal_comment').textContent = data.principal_comment;
+      document.getElementById('next_term_begins').textContent = data.next_term_begins;
+      document.getElementById('admissionNumber').textContent = data.admission_number;
+      document.getElementById('age').textContent = data.age;
+      document.getElementById('attendance').textContent = `${data.attendance}`;
+      document.getElementById('finalAverage').textContent = data.final_average;
+      document.getElementById('classAverage').textContent = data.class_average;
+      document.getElementById('house').textContent = data.house;
+
+      if (data.photo_path) {
+        document.getElementById('studentAvatar').src = `/uploads/${data.photo_path}`;
+      }
+
+      const subjectsTableBody = document.getElementById('subjectsTable').getElementsByTagName('tbody')[0];
+      //let totalMarks = 0;
+      
+       //console.log();
+      data.results.forEach(result => {
+        const row = subjectsTableBody.insertRow();
+        row.innerHTML = `
+          <td>${result.subject}</td>
+          <td>${result.first_assessment}</td>
+          <td>${result.second_assessment}</td>
+          <td>${result.mid_term_test}</td>
+          <td>${result.exam}</td>
+          <td>${result.total_marks}</td>
+          <td>${result.grade}</td>
+          <td>${result.position}</td>
+          <td>${result.remark}</td>
+        `;
+        
+         // Add to total marks
+      if (!isNaN(result.sum_marks)) {
+        totalMarks += parseFloat(result.sum_marks);
+      }
+      });
+      
+        document.getElementById('totalMarks').textContent = data.sum_marks;
+
+      // Insert traits data into the remarks section
+      const traitsTableBody = document.getElementById('traitsTable');
+      const traits = [
+        { name: 'Punctuality', rating: data.punctuality },
+        { name: 'Alertness', rating: data.alertness },
+        { name: 'Neatness', rating: data.neatness },
+        { name: 'Honesty', rating: data.honesty },
+        { name: 'Relationship with Others', rating: data.relationship_with_others },
+        { name: 'Politeness', rating: data.politeness }
+      ];
+
+      traits.forEach(trait => {
+        const row = traitsTableBody.insertRow();
+        row.innerHTML = `
+          <td>${trait.name}</td>
+          <td>${trait.rating}</td>
+        `;
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching student data:', error);
+    });
+</script>
+
+</body>
+</html>
+

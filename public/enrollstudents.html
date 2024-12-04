@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enroll Student | Dashboard</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    .student-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .modal-header {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .back-btn {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+    }
+
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="text-primary">Enroll Student Dashboard</h2>
+      <div>
+        <button class="btn back-btn me-3" onclick="goBackToDashboard()">
+          <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+          <i class="bi bi-plus-circle"></i> Add New Student
+        </button>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title mb-4">Students List</h5>
+        <table class="table table-striped">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">Photo</th>
+              <th scope="col">Name</th>
+              <th scope="col">Class</th>
+              <th scope="col">Admission Number</th>
+              <th scope="col">House</th>
+            </tr>
+          </thead>
+          <tbody id="studentTable">
+            <!-- Student rows will be dynamically populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addStudentForm" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" required>
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentClass" class="form-label">Class</label>
+              <input type="text" class="form-control" id="studentClass" name="studentClass" required>
+            </div>
+            <div class="mb-3">
+              <label for="admissionNumber" class="form-label">Admission Number</label>
+              <input type="text" class="form-control" id="admissionNumber" name="admissionNumber" required>
+            </div>
+            <div class="mb-3">
+              <label for="photo" class="form-label">Photo</label>
+              <input type="file" class="form-control" id="studentPhoto" name="photo" accept="image/*" required>
+            </div>
+            <div class="mb-3">
+              <label for="house" class="form-label">House</label>
+              <select class="form-select" id="house" name="house" required>
+                <option value="Blue">Blue</option>
+                <option value="Green">Green</option>
+                <option value="Red">Red</option>
+                <option value="Yellow">Yellow</option>
+              </select>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">Add Student</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/bootstrap.min.js"></script>
+  <script>
+    function goBackToDashboard(){
+       window.location.href = "/dashboard.html"
+    }
+    const studentTable = document.getElementById('studentTable');
+
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch('/api/students');
+        if (response.ok) {
+          const students = await response.json();
+          studentTable.innerHTML = students.map(student => `
+            <tr>
+              <td><img src="${student.photoUrl}" alt="Student Photo" class="student-photo"></td>
+              <td>${student.firstName} ${student.lastName}</td>
+              <td>${student.studentClass}</td>
+              <td>${student.admissionNumber}</td>
+              <td>${student.house}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    // Handle new student submission
+    document.getElementById('addStudentForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      try {
+        const response = await fetch('/api/students', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          alert('Student added successfully!');
+          document.getElementById('addStudentForm').reset();
+          document.getElementById('addStudentModal').querySelector('.btn-close').click();
+          fetchStudents(); 
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message || 'Failed to add student.'}`);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+
+    fetchStudents();
+  </script>
+</body>
+
+</html>
+

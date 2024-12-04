@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | School Website</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.7.0 -->
+  <link href="/css/fonts" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: #333;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      border: none;
+      border-radius: 15px;
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding-left: 40px;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 10px rgba(110, 142, 251, 0.5);
+      border-color: #6e8efb;
+    }
+
+    .input-group-text {
+      border: none;
+      background-color: transparent;
+      color: #6e8efb;
+    }
+
+    .btn-primary {
+      background-color: #6e8efb;
+      border: none;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #a777e3;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card shadow-lg p-5 w-100" style="max-width: 400px;">
+    <h1 class="text-center fw-bold mb-4">Admin Login</h1>
+    <form id="loginForm" method="POST">
+      <div class="mb-4 position-relative">
+        <label for="username" class="form-label">Username</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-user"></i></span>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+        </div>
+        <div class="error-message" id="usernameError">Username is required.</div>
+      </div>
+      <div class="mb-4 position-relative">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-lock"></i></span>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <div class="error-message" id="passwordError">Password is required.</div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginForm = document.querySelector("#loginForm");
+      const usernameInput = document.querySelector("#username");
+      const passwordInput = document.querySelector("#password");
+      const usernameError = document.querySelector("#usernameError");
+      const passwordError = document.querySelector("#passwordError");
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        // Reset error messages
+        usernameError.style.display = "none";
+        passwordError.style.display = "none";
+
+        const loginData = {
+          username: usernameInput.value.trim(),
+          password: passwordInput.value.trim(),
+        };
+
+        if (!loginData.username) {
+          usernameError.style.display = "block";
+          return;
+        }
+
+        if (!loginData.password) {
+          passwordError.style.display = "block";
+          return;
+        }
+
+        try {
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.redirectUrl) {
+              window.location.href = data.redirectUrl;
+            }
+          } else if (response.status === 401) {
+            alert("Invalid username or password.");
+          } else {
+            alert("An error occurred. Please try again.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Unable to connect to the server.");
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+
